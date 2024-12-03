@@ -20,8 +20,15 @@ let rec sum l =
 	| [] -> 0
 	| hd :: tl -> hd + (sum tl)
 
+let occurs e l =
+	sum (List.map (fun x -> if x = e then 1 else 0) l)
+
 let () =
 	let lr = read_input "input.txt" in
 	let zipped = List.combine (fst lr) (snd lr) in
 	let distances = List.map (fun pair -> abs ((fst pair) - (snd pair))) zipped in
-	print_endline (string_of_int (sum distances))
+	let similarities = List.map (fun e -> e * (occurs e (snd lr))) (fst lr) in
+	print_endline "Part 1:";
+	print_endline (string_of_int (sum distances));
+	print_endline "Part 2:";
+	print_endline (string_of_int (sum similarities))
