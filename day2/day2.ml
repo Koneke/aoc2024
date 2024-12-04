@@ -15,6 +15,32 @@ let is_safe l =
   let is_gradual = is_in_bounds l in
   is_straight && is_gradual
 
+let rec except n l =
+  match l with
+  | [] -> []
+  | x :: xs -> if n = 0 then xs else (x :: (except (n - 1) (xs)))
+
+let is_safeish l =
+(*
+  let sublists = List.init (List.length l) (fun x -> except x l) in
+  List.iter print_endline (List.map string_of_bool (List.map is_safe sublists));
+
+  print_endline "";
+
+  (fun xs -> print_endline (String.concat ", " (List.map string_of_int xs)))
+
+  print_endline
+    ((String.concat ", "
+    (List.map string_of_int (List.init (List.length l) (fun x -> except x l)))));
+*)
+
+  List.fold_left
+    (||)
+    false
+    (List.map
+      (fun x -> is_safe (except x l))
+      (List.init (List.length l) (fun x -> x)))
+
 let read_input =
   let ic = open_in "input.txt" in
   let rec fn acc =
@@ -34,4 +60,11 @@ let read_input =
 let () =
   let input = read_input in
   let safes = (List.map is_safe input) in
-  print_endline (string_of_int (List.length (List.filter (fun x -> x) safes)))
+  let safeishs = (List.map is_safeish input) in
+  (*
+  let sample = [1;2;7;8;9] in
+  print_endline (string_of_bool (is_safeish sample));
+  print_endline (String.concat "," (List.map string_of_int (except 3 sample)));
+  *)
+  print_endline (string_of_int (List.length (List.filter (fun x -> x) safes)));
+  print_endline (string_of_int (List.length (List.filter (fun x -> x) safeishs)))
