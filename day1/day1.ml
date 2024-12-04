@@ -5,9 +5,12 @@ let read_input filename =
 	let rec fn lacc racc =
 		try
 			let line = input_line ic in
-			let split = String.split_on_char ' ' line in
+			let split = List.filter
+				(fun x -> x <> "")
+				(String.split_on_char ' ' line)
+			in
 			let l = int_of_string (List.nth split 0) in
-			let r = int_of_string (List.nth split 3) in
+			let r = int_of_string (List.nth split 1) in
 			fn (l :: lacc) (r :: racc)
 		with End_of_file ->
 			close_in ic;
@@ -27,4 +30,3 @@ let () =
 	print_endline (string_of_int (List.fold_left (+) 0 distances));
 	print_endline "Part 2:";
 	print_endline (string_of_int (List.fold_left (+) 0 similarities))
-
